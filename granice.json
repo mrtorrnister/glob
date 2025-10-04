@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Niemcy", "start":"1945-01-01", "end":"2025-12-31" },
+      "geometry": { "type":"Polygon", "coordinates":[[[5,55],[15,55],[15,47],[5,47],[5,55]]] } },
+
+    { "type": "Feature", "properties": { "name": "Polska", "start":"1945-01-01", "end":"2025-12-31" },
+      "geometry": { "type":"Polygon", "coordinates":[[[14,55],[24,55],[24,49],[14,49],[14,55]]] } },
+
+    { "type": "Feature", "properties": { "name": "Francja", "start":"1945-01-01", "end":"2025-12-31" },
+      "geometry": { "type":"Polygon", "coordinates":[[[0,51],[8,51],[8,42],[0,42],[0,51]]] } },
+
+    { "type": "Feature", "properties": { "name": "Włochy", "start":"1945-01-01", "end":"2025-12-31" },
+      "geometry": { "type":"Polygon", "coordinates":[[[7,47],[18,47],[18,36],[7,36],[7,47]]] } }
+  ]
+}
