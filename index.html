@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Kolorowy Globus</title>
+  <title>Kolorowy Globus 3D</title>
   <style>
     body { margin: 0; overflow: hidden; }
     canvas { display: block; }
@@ -13,206 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/controls/OrbitControls.js"></script>
 
 <script>
-
-const countryColors = {
-  "Afghanistan": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Albania": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Algeria": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Andorra": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Angola": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Antigua and Barbuda": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Argentina": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Armenia": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Australia": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Austria": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Azerbaijan": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Bahamas": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Bahrain": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Bangladesh": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Barbados": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Belarus": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Belgium": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Belize": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Benin": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Bhutan": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Bolivia": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Bosnia and Herzegovina": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Botswana": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Brazil": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Brunei": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Bulgaria": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Burkina Faso": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Burundi": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Cabo Verde": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Cambodia": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Cameroon": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Canada": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Central African Republic": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Chad": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Chile": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "China": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Colombia": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Comoros": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Congo (Congo-Brazzaville)": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Congo (Democratic Republic) (Congo-Kinshasa)": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Costa Rica": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Croatia": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Cuba": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Cyprus": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Czechia": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Denmark": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Djibouti": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Dominica": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Dominican Republic": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Ecuador": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Egypt": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "El Salvador": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Equatorial Guinea": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Eritrea": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Estonia": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Eswatini": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Ethiopia": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Fiji": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Finland": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "France": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Gabon": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Gambia": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Georgia": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Germany": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Ghana": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Greece": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Grenada": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Guatemala": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Guinea": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Guinea-Bissau": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Guyana": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Haiti": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Honduras": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Hungary": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Iceland": { color: "#FF8C33", fillColor: "#FFB380" },
-  "India": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Indonesia": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Iran": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Iraq": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Ireland": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Israel": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Italy": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Jamaica": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Japan": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Jordan": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Kazakhstan": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Kenya": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Kiribati": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Korea (North)": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Korea (South)": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Kuwait": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Kyrgyzstan": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Laos": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Latvia": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Lebanon": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Lesotho": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Liberia": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Libya": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Liechtenstein": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Lithuania": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Luxembourg": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Madagascar": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Malawi": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Malaysia": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Maldives": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Mali": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Malta": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Marshall Islands": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Mauritania": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Mauritius": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Mexico": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Micronesia": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Moldova": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Monaco": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Mongolia": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Montenegro": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Morocco": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Mozambique": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Myanmar": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Namibia": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Nauru": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Nepal": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Netherlands": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "New Zealand": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Nicaragua": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Niger": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Nigeria": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "North Macedonia": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Norway": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Oman": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Pakistan": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Palau": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Palestine State": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Panama": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Papua New Guinea": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Paraguay": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Peru": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Philippines": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Poland": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Portugal": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Qatar": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Romania": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Russia": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Rwanda": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Saint Kitts and Nevis": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Saint Lucia": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Saint Vincent and the Grenadines": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Samoa": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "San Marino": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Sao Tome and Principe": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Saudi Arabia": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Senegal": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Serbia": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Seychelles": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Sierra Leone": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Singapore": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Slovakia": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Slovenia": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Solomon Islands": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Somalia": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "South Africa": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "South Sudan": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Spain": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Sri Lanka": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Sudan": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Suriname": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Sweden": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Switzerland": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Syria": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Taiwan": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Tajikistan": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Tanzania": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Thailand": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Timor-Leste": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Togo": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Tonga": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Trinidad and Tobago": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Tunisia": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Turkey": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Turkmenistan": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Tuvalu": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Uganda": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Ukraine": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "United Arab Emirates": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "United Kingdom": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "United States": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Uruguay": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Uzbekistan": { color: "#33FFF5", fillColor: "#B3FFFB" },
-  "Vanuatu": { color: "#F533FF", fillColor: "#FBB3FF" },
-  "Vatican": { color: "#FF5733", fillColor: "#FFB3B3" },
-  "Venezuela": { color: "#33FF57", fillColor: "#B3FFB3" },
-  "Vietnam": { color: "#3357FF", fillColor: "#B3B3FF" },
-  "Yemen": { color: "#FF33A6", fillColor: "#FFB3D9" },
-  "Zambia": { color: "#FF8C33", fillColor: "#FFB380" },
-  "Zimbabwe": { color: "#33FFF5", fillColor: "#B3FFFB" }
-};
-
-// Scena, kamera, renderer
+// scena, kamera, renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 5);
@@ -221,49 +22,71 @@ const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// OrbitControls
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
-// Światło
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(5,5,5);
-scene.add(light);
-scene.add(new THREE.AmbientLight(0x404040));
+// światło
+scene.add(new THREE.AmbientLight(0x888888));
+const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(5,5,5);
+scene.add(dirLight);
 
-// Ładowanie geoJSON
+// kula globusa
+const R = 1;
+const globeGeometry = new THREE.SphereGeometry(R, 64, 64);
+const globeMaterial = new THREE.MeshPhongMaterial({
+  color: 0x111111,
+  wireframe: false,
+  opacity: 0.2,
+  transparent: true
+});
+const globeMesh = new THREE.Mesh(globeGeometry, globeMaterial);
+scene.add(globeMesh);
+
+// lon/lat → xyz
+function latLonToVector3(lat, lon, radius) {
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
+  const x = -radius * Math.sin(phi) * Math.cos(theta);
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  const y = radius * Math.cos(phi);
+  return new THREE.Vector3(x, y, z);
+}
+
+// funkcja losowego koloru
+function randomColor() {
+  return "#" + Math.floor(Math.random()*16777215).toString(16);
+}
+
+// wczytanie GeoJSON z folderu
 fetch('world1.json')
   .then(res => res.json())
   .then(data => {
     data.features.forEach(feature => {
-      const name = feature.properties.name;
-      const color = (countryColors[name] ? countryColors[name].fillColor : "#CCCCCC");
-      
-      const shape = new THREE.Shape();
-      feature.geometry.coordinates.forEach(polygon => {
-        polygon[0].forEach((coord, i) => {
-          const x = (coord[0]/180) * Math.PI;
-          const y = (coord[1]/90) * Math.PI;
-          if (i === 0) shape.moveTo(x, y);
-          else shape.lineTo(x, y);
+      let color = feature.properties.color || randomColor();
+
+      let polygons = feature.geometry.coordinates;
+      if (feature.geometry.type === "Polygon") polygons = [polygons];
+
+      polygons.forEach(polygon => {
+        polygon.forEach(ring => {
+          const points = ring.map(coord => latLonToVector3(coord[1], coord[0], R));
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          const material = new THREE.LineBasicMaterial({ color: color });
+          const line = new THREE.LineLoop(geometry, material);
+          scene.add(line);
         });
       });
-      
-      const geometry = new THREE.ShapeGeometry(shape);
-      const material = new THREE.MeshBasicMaterial({color: color, side: THREE.DoubleSide});
-      const mesh = new THREE.Mesh(geometry, material);
-      scene.add(mesh);
     });
   });
 
-// Resize
+// resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Animacja
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
