@@ -1,16 +1,52 @@
 {
   "type": "FeatureCollection",
   "features": [
-    { "type": "Feature", "properties": { "name": "Niemcy", "start":"1945-01-01", "end":"2025-12-31" },
-      "geometry": { "type":"Polygon", "coordinates":[[[5,55],[15,55],[15,47],[5,47],[5,55]]] } },
+    {"type":"Feature","properties":{"name":"Austro-Węgry","start":"1700-01-01","end":"1918-06-01"},
+     "geometry":{"type":"Polygon","coordinates":[[[10,50],[18,50],[18,46],[10,46],[10,50]]] }},
 
-    { "type": "Feature", "properties": { "name": "Polska", "start":"1945-01-01", "end":"2025-12-31" },
-      "geometry": { "type":"Polygon", "coordinates":[[[14,55],[24,55],[24,49],[14,49],[14,55]]] } },
+    {"type":"Feature","properties":{"name":"Austro-Węgry-1918-06","start":"1918-06-02","end":"1918-09-01"},
+     "geometry":{"type":"Polygon","coordinates":[[[10.5,50],[17.5,50],[17.5,46],[10.5,46],[10.5,50]]] }},
 
-    { "type": "Feature", "properties": { "name": "Francja", "start":"1945-01-01", "end":"2025-12-31" },
-      "geometry": { "type":"Polygon", "coordinates":[[[0,51],[8,51],[8,42],[0,42],[0,51]]] } },
+    {"type":"Feature","properties":{"name":"Austro-Węgry-1918-09","start":"1918-09-02","end":"1918-11-03"},
+     "geometry":{"type":"Polygon","coordinates":[[[11,50],[17,50],[17,46],[11,46],[11,50]]] }},
 
-    { "type": "Feature", "properties": { "name": "Włochy", "start":"1945-01-01", "end":"2025-12-31" },
-      "geometry": { "type":"Polygon", "coordinates":[[[7,47],[18,47],[18,36],[7,36],[7,47]]] } }
+    {"type":"Feature","properties":{"name":"Austria","start":"1918-11-04","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[13,49],[16,49],[16,46],[13,46],[13,49]]] }},
+
+    {"type":"Feature","properties":{"name":"Węgry","start":"1918-11-04","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[16,49],[19,49],[19,46],[16,46],[16,49]]] }},
+
+    {"type":"Feature","properties":{"name":"Czechosłowacja","start":"1918-11-04","end":"1992-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[12,51],[19,51],[19,48],[12,48],[12,51]]] }},
+
+    {"type":"Feature","properties":{"name":"Polska","start":"1700-01-01","end":"1795-10-24"},
+     "geometry":{"type":"Polygon","coordinates":[[[14,52],[24,52],[24,49],[14,49],[14,52]]] }},
+
+    {"type":"Feature","properties":{"name":"Polska","start":"1918-11-11","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[14,52],[24,52],[24,49],[14,49],[14,52]]] }},
+
+    {"type":"Feature","properties":{"name":"Prusy/Niemcy","start":"1700-01-01","end":"1871-01-18"},
+     "geometry":{"type":"Polygon","coordinates":[[[5,53],[15,53],[15,47],[5,47],[5,53]]] }},
+
+    {"type":"Feature","properties":{"name":"Niemcy","start":"1871-01-18","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[5,55],[15,55],[15,47],[5,47],[5,55]]] }},
+
+    {"type":"Feature","properties":{"name":"Francja","start":"1700-01-01","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[0,51],[8,51],[8,42],[0,42],[0,51]]] }},
+
+    {"type":"Feature","properties":{"name":"Hiszpania","start":"1479-01-01","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[-10,44],[4,44],[4,36],[-10,36],[-10,44]]] }},
+
+    {"type":"Feature","properties":{"name":"Wielka Brytania","start":"1707-05-01","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[-10,60],[2,60],[2,50],[-10,50],[-10,60]]] }},
+
+    {"type":"Feature","properties":{"name":"Włochy","start":"1861-01-17","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[7,47],[18,47],[18,36],[7,36],[7,47]]] }},
+
+    {"type":"Feature","properties":{"name":"Rumunia","start":"1859-01-24","end":"2025-12-31"},
+     "geometry":{"type":"Polygon","coordinates":[[[20,48],[29,48],[29,43],[20,43],[20,48]]] }},
+
+    {"type":"Feature","properties":{"name":"Jugosławia","start":"1918-12-01","end":"1992-04-27"},
+     "geometry":{"type":"Polygon","coordinates":[[[15,46],[22,46],[22,42],[15,42],[15,46]]] }}
   ]
 }
