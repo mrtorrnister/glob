@@ -9,10 +9,11 @@
   </style>
 </head>
 <body>
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
-    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/controls/OrbitControls.js';
+  <!-- Ładowanie Three.js i OrbitControls -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/OrbitControls.js"></script>
 
+  <script>
     // scena
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -33,7 +34,7 @@
     scene.add(light);
 
     // kontrolki
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     // konwersja lat/lon na XYZ
     function latLonToVector3(lat, lon, radius = 1.001) {
@@ -60,7 +61,8 @@
             coords.forEach(poly => drawPolygon(poly, color));
           }
         });
-      });
+      })
+      .catch(err => console.error("Błąd wczytywania JSON:", err));
 
     // rysowanie granic
     function drawPolygon(polygon, color) {
@@ -69,7 +71,7 @@
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         const line = new THREE.LineLoop(
           geometry,
-          new THREE.LineBasicMaterial({ color: color, linewidth: 1 })
+          new THREE.LineBasicMaterial({ color: color })
         );
         scene.add(line);
       });
