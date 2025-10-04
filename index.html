@@ -30,7 +30,7 @@
     viewer.timeline.zoomTo(start, stop);
 
     // Wczytanie GeoJSON
-    Cesium.GeoJsonDataSource.load('polska.json', { clampToGround: true })
+    Cesium.GeoJsonDataSource.load('world1.json', { clampToGround: true })
     .then(function(dataSource) {
       viewer.dataSources.add(dataSource);
       const entities = dataSource.entities.values;
