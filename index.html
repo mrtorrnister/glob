@@ -1,84 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Globus 3D</title>
-<style>
-  body { margin: 0; overflow: hidden; }
-  canvas { display: block; }
-</style>
+  <meta charset="UTF-8" />
+  <title>Globus</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+  <!-- ✅ Ładowanie Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/controls/OrbitControls.js"></script>
+  <script>
+    // scena
+    const scene = new THREE.Scene();
 
-<script>
-// scena, kamera, renderer
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 5);
-const renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+    // kamera
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 3;
 
-// kontrolki
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
+    // renderer
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-// światło
-scene.add(new THREE.AmbientLight(0x888888));
-const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-dirLight.position.set(5,5,5);
-scene.add(dirLight);
+    // kula (ziemia)
+    const geometry = new THREE.SphereGeometry(1, 64, 64);
+    const material = new THREE.MeshBasicMaterial({ color: 0x2233ff, wireframe: true });
+    const globe = new THREE.Mesh(geometry, material);
+    scene.add(globe);
 
-// kula globusa
-const R = 1;
-const globe = new THREE.Mesh(
-  new THREE.SphereGeometry(R, 64, 64),
-  new THREE.MeshPhongMaterial({color:0x111111, wireframe:true})
-);
-scene.add(globe);
+    // kontrolki
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-// konwersja lat/lon → xyz
-function latLonToVector3(lat, lon, radius){
-  const phi = (90-lat)*(Math.PI/180);
-  const theta = (lon+180)*(Math.PI/180);
-  const x = -radius*Math.sin(phi)*Math.cos(theta);
-  const z = radius*Math.sin(phi)*Math.sin(theta);
-  const y = radius*Math.cos(phi);
-  return new THREE.Vector3(x, y, z);
-}
+    // animacja
+    function animate() {
+      requestAnimationFrame(animate);
+      globe.rotation.y += 0.001;
+      renderer.render(scene, camera);
+    }
+    animate();
 
-// wczytanie world1.json
-fetch('world1.json')
-  .then(res => res.json())
-  .then(data => {
-    data.features.forEach(f => {
-      f.geometry.coordinates.forEach(polygon => {
-        polygon.forEach(ring => {
-          const points = ring.map(c => latLonToVector3(c[1], c[0], R));
-          const geom = new THREE.BufferGeometry().setFromPoints(points);
-          const line = new THREE.LineLoop(geom, new THREE.LineBasicMaterial({color:0xffffff}));
-          scene.add(line);
-        });
-      });
+    // resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     });
-  });
-
-// resize
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// animacja
-function animate(){
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-}
-animate();
-</script>
+  </script>
 </body>
 </html>
