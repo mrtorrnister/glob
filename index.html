@@ -1,78 +1,239 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Historyczna Europa 1700-2025</title>
-  <script src="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Cesium.js"></script>
-  <link href="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <title>World Map Colored</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    html, body, #cesiumContainer {
-      width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
-    }
+    #map { height: 100vh; width: 100%; }
   </style>
 </head>
 <body>
-  <div id="cesiumContainer"></div>
-  <script>
-    const viewer = new Cesium.Viewer('cesiumContainer', {
-      timeline: true,
-      animation: true
-    });
+<div id="map"></div>
 
-    // Timeline od 1700 do 2025
-    const start = Cesium.JulianDate.fromDate(new Date(1700,0,1));
-    const stop  = Cesium.JulianDate.fromDate(new Date(2025,0,1));
-    viewer.clock.startTime = start.clone();
-    viewer.clock.stopTime = stop.clone();
-    viewer.clock.currentTime = start.clone();
-    viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
-    viewer.clock.multiplier = 31536000; // 1 sek = 1 rok
-    viewer.timeline.zoomTo(start, stop);
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    // Wczytanie GeoJSON
-    Cesium.GeoJsonDataSource.load('world1.json', { clampToGround: true })
-    .then(function(dataSource) {
-      viewer.dataSources.add(dataSource);
-      const entities = dataSource.entities.values;
+<script>
+const map = L.map('map').setView([20, 0], 2);
 
-      for (let i=0; i<entities.length; i++){
-        const entity = entities[i];
-        const props = entity.properties;
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+}).addTo(map);
 
-        if(props && props.start && props.end){
-          const startDate = Cesium.JulianDate.fromDate(new Date(props.start.getValue()));
-          const endDate   = Cesium.JulianDate.fromDate(new Date(props.end.getValue()));
+const countryColors = {
+  "Afghanistan": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Albania": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Algeria": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Andorra": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Angola": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Antigua and Barbuda": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Argentina": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Armenia": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Australia": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Austria": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Azerbaijan": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Bahamas": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Bahrain": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Bangladesh": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Barbados": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Belarus": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Belgium": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Belize": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Benin": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Bhutan": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Bolivia": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Bosnia and Herzegovina": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Botswana": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Brazil": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Brunei": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Bulgaria": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Burkina Faso": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Burundi": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Cabo Verde": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Cambodia": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Cameroon": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Canada": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Central African Republic": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Chad": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Chile": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "China": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Colombia": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Comoros": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Congo (Congo-Brazzaville)": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Congo (Democratic Republic) (Congo-Kinshasa)": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Costa Rica": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Croatia": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Cuba": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Cyprus": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Czechia": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Denmark": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Djibouti": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Dominica": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Dominican Republic": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Ecuador": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Egypt": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "El Salvador": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Equatorial Guinea": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Eritrea": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Estonia": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Eswatini": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Ethiopia": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Fiji": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Finland": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "France": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Gabon": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Gambia": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Georgia": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Germany": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Ghana": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Greece": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Grenada": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Guatemala": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Guinea": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Guinea-Bissau": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Guyana": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Haiti": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Honduras": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Hungary": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Iceland": { color: "#FF8C33", fillColor: "#FFB380" },
+  "India": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Indonesia": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Iran": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Iraq": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Ireland": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Israel": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Italy": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Jamaica": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Japan": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Jordan": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Kazakhstan": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Kenya": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Kiribati": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Kuwait": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Kyrgyzstan": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Laos": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Latvia": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Lebanon": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Lesotho": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Liberia": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Libya": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Liechtenstein": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Lithuania": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Luxembourg": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Madagascar": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Malawi": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Malaysia": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Maldives": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Mali": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Malta": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Marshall Islands": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Mauritania": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Mauritius": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Mexico": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Micronesia": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Moldova": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Monaco": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Mongolia": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Montenegro": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Morocco": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Mozambique": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Myanmar": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Namibia": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Nauru": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Nepal": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Netherlands": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "New Zealand": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Nicaragua": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Niger": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Nigeria": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "North Macedonia": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Norway": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Oman": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Pakistan": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Palau": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Palestine State": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Panama": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Papua New Guinea": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Paraguay": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Peru": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Philippines": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Poland": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Portugal": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Qatar": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Romania": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Russia": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Rwanda": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Saint Kitts and Nevis": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Saint Lucia": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Saint Vincent and the Grenadines": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Samoa": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "San Marino": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Sao Tome and Principe": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Saudi Arabia": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Senegal": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Serbia": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Seychelles": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Sierra Leone": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Singapore": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Slovakia": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Slovenia": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Solomon Islands": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Somalia": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "South Africa": { color: "#FF8C33", fillColor: "#FFB380" },
+  "South Sudan": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Spain": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Sri Lanka": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Sudan": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Suriname": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Sweden": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Switzerland": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Syria": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Tajikistan": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Tanzania": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Thailand": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Timor-Leste": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Togo": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Tonga": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Trinidad and Tobago": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Tunisia": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Turkey": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Turkmenistan": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Tuvalu": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Uganda": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Ukraine": { color: "#FF8C33", fillColor: "#FFB380" },
+  "United Arab Emirates": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "United Kingdom": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "United States": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Uruguay": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Uzbekistan": { color: "#3357FF", fillColor: "#B3B3FF" },
+  "Vanuatu": { color: "#FF33A6", fillColor: "#FFB3D9" },
+  "Vatican City": { color: "#FF8C33", fillColor: "#FFB380" },
+  "Venezuela": { color: "#33FFF5", fillColor: "#B3FFFB" },
+  "Vietnam": { color: "#F533FF", fillColor: "#FBB3FF" },
+  "Yemen": { color: "#FF5733", fillColor: "#FFB3B3" },
+  "Zambia": { color: "#33FF57", fillColor: "#B3FFB3" },
+  "Zimbabwe": { color: "#3357FF", fillColor: "#B3B3FF" }
+};
 
-          entity.availability = new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
-            start: startDate,
-            stop:  endDate
-          })]);
+// Funkcja stylująca kraje
+function style(feature) {
+  const name = feature.properties.name;
+  const colors = countryColors[name] || { color: "#000000", fillColor: "#CCCCCC" };
+  return {
+    color: colors.color,
+    fillColor: colors.fillColor,
+    weight: 1,
+    fillOpacity: 0.7
+  };
+}
 
-          // Kolory państw
-          const n = props.name.getValue();
-          const colors = {
-            "Austro-Węgry": Cesium.Color.RED.withAlpha(0.4),
-            "Austro-Węgry-1918-06": Cesium.Color.RED.withAlpha(0.3),
-            "Austro-Węgry-1918-09": Cesium.Color.RED.withAlpha(0.2),
-            "Austria": Cesium.Color.BLUE.withAlpha(0.4),
-            "Węgry": Cesium.Color.GREEN.withAlpha(0.4),
-            "Czechosłowacja": Cesium.Color.YELLOW.withAlpha(0.4),
-            "Polska": Cesium.Color.CYAN.withAlpha(0.4),
-            "Prusy/Niemcy": Cesium.Color.ORANGE.withAlpha(0.4),
-            "Niemcy": Cesium.Color.ORANGE.withAlpha(0.6),
-            "Francja": Cesium.Color.GREEN.withAlpha(0.6),
-            "Hiszpania": Cesium.Color.MAGENTA.withAlpha(0.6),
-            "Wielka Brytania": Cesium.Color.BROWN.withAlpha(0.6),
-            "Włochy": Cesium.Color.PINK.withAlpha(0.6),
-            "Rumunia": Cesium.Color.LIGHTGREEN.withAlpha(0.6),
-            "Jugosławia": Cesium.Color.LIGHTBLUE.withAlpha(0.6)
-          };
-          entity.polygon.material = colors[n] || Cesium.Color.GRAY.withAlpha(0.4);
-          entity.polygon.outline = true;
-          entity.polygon.outlineColor = Cesium.Color.BLACK;
-        }
-      }
-    });
-  </script>
+// Wczytanie geoJSON z twojego pliku world1.json
+fetch('world1.json')
+  .then(res => res.json())
+  .then(data => {
+    L.geoJSON(data, { style: style }).addTo(map);
+  })
+  .catch(err => console.error("Błąd wczytywania world1.json:", err));
+</script>
 </body>
 </html>
