@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Historyczna Europa - Globus</title>
+  <title>Historyczna Europa 1700-2025</title>
   <script src="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Cesium.js"></script>
   <link href="https://cesium.com/downloads/cesiumjs/releases/1.120/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
   <style>
@@ -19,14 +19,14 @@
       animation: true
     });
 
-    // Timeline: lata 1945-2025
-    const start = Cesium.JulianDate.fromDate(new Date(1945,0,1));
+    // Timeline od 1700 do 2025
+    const start = Cesium.JulianDate.fromDate(new Date(1700,0,1));
     const stop  = Cesium.JulianDate.fromDate(new Date(2025,0,1));
     viewer.clock.startTime = start.clone();
     viewer.clock.stopTime = stop.clone();
     viewer.clock.currentTime = start.clone();
     viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
-    viewer.clock.multiplier = 31536000; // 1 sekunda = 1 rok
+    viewer.clock.multiplier = 31536000; // 1 sek = 1 rok
     viewer.timeline.zoomTo(start, stop);
 
     // Wczytanie GeoJSON
@@ -40,18 +40,34 @@
         const props = entity.properties;
 
         if(props && props.start && props.end){
+          const startDate = Cesium.JulianDate.fromDate(new Date(props.start.getValue()));
+          const endDate   = Cesium.JulianDate.fromDate(new Date(props.end.getValue()));
+
           entity.availability = new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
-            start: Cesium.JulianDate.fromDate(new Date(props.start.getValue())),
-            stop:  Cesium.JulianDate.fromDate(new Date(props.end.getValue()))
+            start: startDate,
+            stop:  endDate
           })]);
 
-          // Kolory dla państw
+          // Kolory państw
           const n = props.name.getValue();
-          if(n === "Niemcy") entity.polygon.material = Cesium.Color.RED.withAlpha(0.4);
-          else if(n === "Polska") entity.polygon.material = Cesium.Color.BLUE.withAlpha(0.4);
-          else if(n === "Francja") entity.polygon.material = Cesium.Color.GREEN.withAlpha(0.4);
-          else if(n === "Włochy") entity.polygon.material = Cesium.Color.YELLOW.withAlpha(0.4);
-
+          const colors = {
+            "Austro-Węgry": Cesium.Color.RED.withAlpha(0.4),
+            "Austro-Węgry-1918-06": Cesium.Color.RED.withAlpha(0.3),
+            "Austro-Węgry-1918-09": Cesium.Color.RED.withAlpha(0.2),
+            "Austria": Cesium.Color.BLUE.withAlpha(0.4),
+            "Węgry": Cesium.Color.GREEN.withAlpha(0.4),
+            "Czechosłowacja": Cesium.Color.YELLOW.withAlpha(0.4),
+            "Polska": Cesium.Color.CYAN.withAlpha(0.4),
+            "Prusy/Niemcy": Cesium.Color.ORANGE.withAlpha(0.4),
+            "Niemcy": Cesium.Color.ORANGE.withAlpha(0.6),
+            "Francja": Cesium.Color.GREEN.withAlpha(0.6),
+            "Hiszpania": Cesium.Color.MAGENTA.withAlpha(0.6),
+            "Wielka Brytania": Cesium.Color.BROWN.withAlpha(0.6),
+            "Włochy": Cesium.Color.PINK.withAlpha(0.6),
+            "Rumunia": Cesium.Color.LIGHTGREEN.withAlpha(0.6),
+            "Jugosławia": Cesium.Color.LIGHTBLUE.withAlpha(0.6)
+          };
+          entity.polygon.material = colors[n] || Cesium.Color.GRAY.withAlpha(0.4);
           entity.polygon.outline = true;
           entity.polygon.outlineColor = Cesium.Color.BLACK;
         }
